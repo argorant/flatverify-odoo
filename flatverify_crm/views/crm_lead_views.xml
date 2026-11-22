@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_lead_view_form_flatverify" model="ir.ui.view">
+        <field name="name">crm.lead.form.flatverify</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <field name="flatverify_checking" invisible="1"/>
+                <field name="flatverify_checked_at" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='email_from'][not(@id)][not(ancestor::field)]/.." position="after">
+                <label for="flatverify_status" string="Flatverify" invisible="not email_from"/>
+                <div class="o_row" name="flatverify_row" invisible="not email_from">
+                    <field name="flatverify_status" nolabel="1" widget="badge"
+                        decoration-success="flatverify_status == 'valid'"
+                        decoration-danger="flatverify_status == 'invalid'"
+                        decoration-warning="flatverify_status == 'risky'"
+                        decoration-muted="flatverify_status == 'unknown'"
+                        invisible="not flatverify_status"/>
+                    <field name="flatverify_reason" nolabel="1" class="text-muted" invisible="not flatverify_reason"/>
+                    <span class="text-muted" invisible="not flatverify_checking">Checking</span>
+                    <button name="action_flatverify_verify" type="object" string="Verify email"
+                        class="btn btn-link p-0 text-nowrap" icon="fa-check-circle" invisible="flatverify_checking"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_case_tree_view_leads_flatverify" model="ir.ui.view">
+        <field name="name">crm.lead.list.flatverify.view</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='email_from']" position="after">
+                <field name="flatverify_status" optional="show" widget="badge"
+                    decoration-success="flatverify_status == 'valid'"
+                    decoration-danger="flatverify_status == 'invalid'"
+                    decoration-warning="flatverify_status == 'risky'"
+                    decoration-muted="flatverify_status == 'unknown'"/>
+                <field name="flatverify_reason" optional="hide"/>
+                <field name="flatverify_checked_at" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_case_tree_view_oppor_flatverify" model="ir.ui.view">
+        <field name="name">crm.lead.list.flatverify.view</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='email_from']" position="after">
+                <field name="flatverify_status" optional="show" widget="badge"
+                    decoration-success="flatverify_status == 'valid'"
+                    decoration-danger="flatverify_status == 'invalid'"
+                    decoration-warning="flatverify_status == 'risky'"
+                    decoration-muted="flatverify_status == 'unknown'"/>
+                <field name="flatverify_reason" optional="hide"/>
+                <field name="flatverify_checked_at" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_crm_case_leads_filter_flatverify" model="ir.ui.view">
+        <field name="name">crm.lead.search.flatverify.leads</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="flatverify_valid" string="Valid email" domain="[('flatverify_status', '=', 'valid')]"/>
+                <filter name="flatverify_invalid" string="Invalid email" domain="[('flatverify_status', '=', 'invalid')]"/>
+                <filter name="flatverify_risky" string="Risky email" domain="[('flatverify_status', '=', 'risky')]"/>
+                <filter name="flatverify_unchecked" string="Email not checked"
+                    domain="[('flatverify_status', '=', False), ('email_from', '!=', False)]"/>
+                <filter name="flatverify_group_status" string="Flatverify Status" context="{'group_by': 'flatverify_status'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_crm_case_opportunities_filter_flatverify" model="ir.ui.view">
+        <field name="name">crm.lead.search.flatverify.opportunities</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="flatverify_valid" string="Valid email" domain="[('flatverify_status', '=', 'valid')]"/>
+                <filter name="flatverify_invalid" string="Invalid email" domain="[('flatverify_status', '=', 'invalid')]"/>
+                <filter name="flatverify_risky" string="Risky email" domain="[('flatverify_status', '=', 'risky')]"/>
+                <filter name="flatverify_unchecked" string="Email not checked"
+                    domain="[('flatverify_status', '=', False), ('email_from', '!=', False)]"/>
+                <filter name="flatverify_group_status" string="Flatverify Status" context="{'group_by': 'flatverify_status'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_flatverify" model="ir.ui.view">
+        <field name="name">res.partner.form.flatverify</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='email'][not(ancestor::field)]/.." position="after">
+                <label for="flatverify_status" string="Flatverify" class="d-md-none" invisible="not email"/>
+                <div class="d-flex align-items-baseline gap-2 w-md-50" name="flatverify_row" invisible="not email">
+                    <i class="fa fa-fw me-1 fa-check-circle text-primary" title="Flatverify"/>
+                    <field name="flatverify_status" nolabel="1" widget="badge"
+                        decoration-success="flatverify_status == 'valid'"
+                        decoration-danger="flatverify_status == 'invalid'"
+                        decoration-warning="flatverify_status == 'risky'"
+                        decoration-muted="flatverify_status == 'unknown'"
+                        invisible="not flatverify_status"/>
+                    <field name="flatverify_reason" nolabel="1" class="text-muted" invisible="not flatverify_reason"/>
+                    <span class="text-muted" invisible="not flatverify_checking">Checking</span>
+                    <field name="flatverify_checking" invisible="1"/>
+                    <span class="text-muted small text-nowrap" invisible="not flatverify_checked_at">
+                        <field name="flatverify_checked_at" nolabel="1"/>
+                    </span>
+                    <button name="action_flatverify_verify" type="object" string="Verify email"
+                        class="btn btn-link p-0 text-nowrap" invisible="flatverify_checking"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_tree_flatverify" model="ir.ui.view">
+        <field name="name">res.partner.list.flatverify</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='email']" position="after">
+                <field name="flatverify_status" optional="show" widget="badge"
+                    decoration-success="flatverify_status == 'valid'"
+                    decoration-danger="flatverify_status == 'invalid'"
+                    decoration-warning="flatverify_status == 'risky'"
+                    decoration-muted="flatverify_status == 'unknown'"/>
+                <field name="flatverify_reason" optional="hide"/>
+                <field name="flatverify_checked_at" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_res_partner_filter_flatverify" model="ir.ui.view">
+        <field name="name">res.partner.search.flatverify</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="flatverify_valid" string="Valid email" domain="[('flatverify_status', '=', 'valid')]"/>
+                <filter name="flatverify_invalid" string="Invalid email" domain="[('flatverify_status', '=', 'invalid')]"/>
+                <filter name="flatverify_risky" string="Risky email" domain="[('flatverify_status', '=', 'risky')]"/>
+                <filter name="flatverify_unchecked" string="Email not checked"
+                    domain="[('flatverify_status', '=', False), ('email', '!=', False)]"/>
+                <filter name="flatverify_group_status" string="Flatverify Status" context="{'group_by': 'flatverify_status'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

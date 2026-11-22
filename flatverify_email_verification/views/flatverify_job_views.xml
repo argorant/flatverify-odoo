@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="flatverify_job_view_list" model="ir.ui.view">
+        <field name="name">flatverify.job.list</field>
+        <field name="model">flatverify.job</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false">
+                <field name="name"/>
+                <field name="res_model_label"/>
+                <field name="record_count"/>
+                <field name="progress" widget="progressbar"/>
+                <field name="state" widget="badge"
+                    decoration-success="state == 'done'"
+                    decoration-info="state in ('queued', 'running', 'waiting')"
+                    decoration-warning="state == 'pending'"
+                    decoration-danger="state == 'failed'"/>
+                <field name="create_date" string="Started"/>
+                <field name="finished_at"/>
+                <field name="message"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="flatverify_job_view_form" model="ir.ui.view">
+        <field name="name">flatverify.job.form</field>
+        <field name="model">flatverify.job</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false">
+                <header>
+                    <button name="action_flatverify_check_now" type="object" string="Check now"
+                        class="btn-primary" invisible="state not in ('queued', 'running', 'waiting')"/>
+                    <button name="action_flatverify_retry" type="object" string="Try again"
+                        invisible="state not in ('failed', 'pending')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,running,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_flatverify_open_records" type="object" class="oe_stat_button" icon="fa-users">
+                            <field name="record_count" widget="statinfo" string="Records"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="res_model_label"/>
+                            <field name="total"/>
+                            <field name="progress" widget="progressbar"/>
+                        </group>
+                        <group>
+                            <field name="create_date" string="Started"/>
+                            <field name="finished_at"/>
+                            <field name="next_try_at" invisible="not next_try_at"/>
+                            <field name="remote_id" groups="base.group_no_one"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-warning" role="alert" invisible="not message">
+                        <field name="message"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_flatverify_job" model="ir.actions.act_window">
+        <field name="name">Flatverify jobs</field>
+        <field name="res_model">flatverify.job</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No Flatverify jobs yet</p>
+            <p>Select contacts in a list, open Actions and choose Verify emails with Flatverify.
+                The whole selection goes out as one list and the results are written back to each record.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_flatverify_job" name="Flatverify jobs" parent="base.menu_administration"
+        action="action_flatverify_job" sequence="90" groups="base.group_system"/>
+</odoo>
