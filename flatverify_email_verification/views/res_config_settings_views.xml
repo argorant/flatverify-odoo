@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_flatverify" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.flatverify</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="95"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Flatverify" string="Flatverify" name="flatverify_email_verification">
+                    <block title="Flatverify email verification" name="flatverify_setting_container">
+                        <setting id="flatverify_api_key_setting" string="API key"
+                            help="Paste the API key from app.flatverify.com, Settings, API keys. Every plan is unlimited, plans differ only in speed.">
+                            <field name="flatverify_api_key" password="True" placeholder="fv_..."/>
+                            <div class="mt-2 d-flex gap-3">
+                                <button name="action_flatverify_test_connection" type="object" string="Test connection"
+                                    class="btn-link p-0" icon="oi-arrow-right"/>
+                                <button name="%(flatverify_email_verification.action_flatverify_job)d" type="action"
+                                    string="Flatverify jobs" class="btn-link p-0" icon="oi-arrow-right"/>
+                            </div>
+                        </setting>
+                        <setting id="flatverify_auto_setting"
+                            help="New and changed email addresses are queued and checked in the background. Saving a record never waits for the check.">
+                            <field name="flatverify_auto_verify"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>
